@@ -1,77 +1,86 @@
-"""Build the 'AI agent for real estate' LinkedIn carousel as HTML + PNGs."""
-import json, pathlib
+"""Build the 'AI agent for real estate' LinkedIn carousel (simple version).
+
+Usage: python3 build.py && node shot.js
+"""
+import pathlib
+
 H = pathlib.Path(__file__).parent
-C = {"p": ("#D9C2F0", "#A77BD8"), "g": ("#C6EBD3", "#3DBE7A"), "b": ("#C5E3FA", "#5BAFE8")}
+BRAND = "A Shameless Marketer"
+C = {"p": ("#DCC8F2", "#9B6BD6"), "g": ("#C9EDD6", "#2FB36A"), "b": ("#CDE6FA", "#3D9BE0")}
+
+
+def chips(*items):
+    return '<div class="chips">' + "".join(f"<span>{i}</span>" for i in items) + "</div>"
+
+
+def flow(*items):
+    return '<div class="flow">' + '<em>→</em>'.join(f"<span>{i}</span>" for i in items) + "</div>"
+
+
 S = [
- dict(n=1,a="p",label="THE AGENT QUESTION",pre="Agents lose hours to",hl="admin",post="every day.",band="But who said you have to do it?",
-  body="Replying to leads, sending listings, chasing documents. Most of it is the same task, every day.",
-  take="YOU WERE HIRED TO SELL, NOT TO COPY-PASTE.",proof='<div class="big">📱💬📄</div><div class="cap">The same 4 tasks, every single day</div>'),
- dict(n=2,a="g",label="THE SIMPLE DEFINITION",pre="An AI agent is just a",hl="helper",post="with rules.",band="Not a robot. A routine.",
-  body="It reads a message, decides the next step, and does it using your tools: WhatsApp, Google Sheets, email.",
-  take="IF YOU CAN WRITE THE STEPS, AN AGENT CAN RUN THEM.",
-  proof='<div class="flow"><div>Trigger<small>New lead</small></div>→<div>Decide<small>Qualify</small></div>→<div>Act<small>Reply + log</small></div></div>'),
- dict(n=3,a="b",label="THE LEAD REPLY",pre="Leads go",hl="cold",post="while you're at a viewing.",band="Agent fix: reply in under 1 minute.",
-  body="The agent answers new enquiries, asks 3 questions (budget, area, move-in date) and saves the answers to your sheet.",
-  take="FIRST TO REPLY OFTEN WINS THE LEAD.",
-  proof='<div class="cards"><div><b>Before</b>Reply in hours</div><div class="hot"><b>After</b>Under 1 min, 24/7</div></div>'),
- dict(n=4,a="p",label="THE LISTING MATCH",pre="Stop",hl="scrolling",post="your own listings.",band="Agent fix: match buyers to units.",
-  body="A new unit comes in. The agent checks your buyer list and drafts a message to each buyer who fits.",
-  take="YOUR DATABASE SHOULD WORK WHILE YOU SLEEP.",
-  proof='<table><tr><th>Buyer</th><th>Budget</th><th>Area</th><th>Match</th></tr><tr><td>Lead A</td><td>RM600k</td><td>Mont Kiara</td><td>✅</td></tr><tr><td>Lead B</td><td>RM450k</td><td>Cheras</td><td>❌</td></tr><tr><td>Lead C</td><td>RM650k</td><td>Mont Kiara</td><td>✅</td></tr></table>'),
- dict(n=5,a="g",label="THE FOLLOW-UP",pre="Most deals die in",hl="silence.",post="",band="Agent fix: never forget a follow-up.",
-  body="The agent tracks every lead and nudges you, or the client, on day 3, 7 and 14.",
-  take="FOLLOW-UP IS A SYSTEM, NOT A MOOD.",
-  proof='<div class="tl"><div><b>Day 1</b>Viewing</div><div><b>Day 3</b>"Any questions?"</div><div><b>Day 7</b>Similar unit</div><div><b>Day 14</b>Market update</div></div>'),
- dict(n=6,a="b",label="THE PAPERWORK",pre="Chasing",hl="documents",post="eats your week.",band="Agent fix: checklist + reminders.",
-  body="The agent sends each client a list, ticks off what arrives and reminds them about what's missing.",
-  take="LET THE AGENT NAG. YOU CLOSE.",
-  proof='<div class="check"><div>✅ IC</div><div>✅ Payslip</div><div>⏳ Bank statement</div><div>⏳ EPF statement</div></div>'),
- dict(n=7,a="p",label="THE LIMITS",pre="Agents",hl="can't",post="replace trust.",band="Know where to draw the line.",
-  body="",take="AUTOMATE THE ROUTINE. KEEP THE RELATIONSHIP.",
-  proof='<div class="check"><div>✅ Replies, sorting, reminders, drafts</div><div>❌ Pricing advice, negotiation, legal answers</div><div>⚠️ Check anything sent under your name</div></div>'),
- dict(n=8,a="g",label="THE START",pre="Start with",hl="one",post="task.",band="Not ten. One.",
-  body="Pick the job you repeat most this week. Write the steps on paper. That's your first agent.<br><b>Comment \"AGENT\" for my starter setup.</b>",
-  take="SMALL AGENT. BIG HOURS BACK.",
-  proof='<div class="check"><div>1. WhatsApp Business auto-reply</div><div>2. Google Sheets</div><div>3. ChatGPT / Claude + Zapier or Make</div></div>'),
+    dict(a="p", label="THE AGENT QUESTION", h=["Too much", "admin?"], band="Let an agent do it.",
+         proof='<div class="emoji">📱 💬 📄</div>', take="SELL MORE.<br>TYPE LESS."),
+    dict(a="g", label="THE BASICS", h=["AI agent =", "helper."], band="You set the rules. It runs them.",
+         proof=flow("Lead", "Sort", "Reply"), take="WRITE THE STEPS.<br>DONE."),
+    dict(a="b", label="THE LEAD REPLY", h=["Reply in", "1 minute."], band="Even at a viewing.",
+         proof='<div class="vs"><div><small>Before</small>Hours</div><div class="on"><small>After</small>1 min</div></div>',
+         take="FAST REPLY<br>WINS."),
+    dict(a="p", label="THE LISTING MATCH", h=["New unit?", "Matched."], band="It finds the right buyer.",
+         proof=chips("Lead A ✅", "Lead B ❌", "Lead C ✅"), take="YOUR LIST<br>WORKS FOR YOU."),
+    dict(a="g", label="THE FOLLOW-UP", h=["Never", "forget", "a lead."], band="Day 3. Day 7. Day 14.",
+         proof='<div class="dots"><i></i><b></b><i></i><b></b><i></i></div>', take="FOLLOW-UP<br>IS A SYSTEM."),
+    dict(a="b", label="THE PAPERWORK", h=["Stop", "chasing", "documents."], band="It reminds the client.",
+         proof=chips("✅ IC", "✅ Payslip", "⏳ Bank statement"), take="LET IT NAG.<br>YOU CLOSE."),
+    dict(a="p", label="THE LIMITS", h=["It", "can't", "build trust."], band="That's still your job.",
+         proof=chips("✅ Admin", "❌ Advice", "❌ Negotiation"), take="AUTOMATE TASKS.<br>NOT PEOPLE."),
+    dict(a="g", label="THE START", h=["Start with", "one", "task."], band="Not ten. One.",
+         proof='<div class="cta">Comment “AGENT” 👇</div>', take="SMALL AGENT.<br>BIG TIME SAVED."),
 ]
-CSS = """*{box-sizing:border-box;margin:0}body{background:#ddd}
+
+CSS = """*{box-sizing:border-box;margin:0}body{background:#ccc}
 .s{width:1080px;height:1350px;position:relative;overflow:hidden;font-family:Inter,Arial,sans-serif;color:#111;
-background:#F3E9DC;background-image:linear-gradient(#e6dccd 1px,transparent 1px),linear-gradient(90deg,#e6dccd 1px,transparent 1px);background-size:40px 40px;padding:70px 80px;margin-bottom:20px}
-.top{display:flex;justify-content:space-between;align-items:center;font-weight:800;letter-spacing:2px;font-size:26px}
-.logo{background:#FFE000;padding:16px 26px;font-size:26px;letter-spacing:0}
-h1{font-size:104px;line-height:1.02;font-weight:900;letter-spacing:-3px;margin-top:60px}
-.hl{background:var(--l);padding:0 12px;position:relative;outline:3px solid var(--d)}
-.hl:before,.hl:after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:var(--d)}
-.hl:before{left:-11px;top:-11px}.hl:after{right:-11px;bottom:-11px}
-.band{display:inline-block;background:var(--d);color:#fff;font-size:50px;font-weight:800;padding:12px 22px;margin-top:36px}
-.line{width:110px;height:5px;background:var(--d);margin:40px 0 28px}
-.body{font-size:34px;line-height:1.35;color:#333;max-width:880px}
-.proof{margin-top:36px;font-size:32px;position:relative;z-index:1}
-.take{position:absolute;left:80px;bottom:150px;background:#111;color:#fff;font-weight:900;font-size:44px;line-height:1.1;padding:28px 32px;max-width:560px}
-.foot{position:absolute;left:80px;right:80px;bottom:60px;display:flex;justify-content:space-between;align-items:center;font-size:22px;color:#444}
-.pill{background:#fff;border-radius:40px;padding:14px 28px;font-size:28px;font-weight:700;color:#111}
-.big{font-size:120px}.cap{font-size:30px;color:#555}
-.flow{display:flex;gap:20px;align-items:center;font-size:44px;font-weight:800}
-.flow div{background:var(--l);padding:20px 26px;border-radius:16px}.flow small{display:block;font-size:24px;font-weight:500}
-.cards{display:flex;gap:24px}.cards div{flex:1;background:#fff;padding:28px;border-radius:16px;font-size:34px}
-.cards b{display:block;font-size:26px;color:#666}.cards .hot{background:var(--l);font-weight:800}
-table{border-collapse:separate;border-spacing:0 8px;width:100%;font-size:30px}th{text-align:left;color:#666;font-size:24px;padding:0 16px}
-td{background:#fff;padding:16px}tr td:last-child{background:var(--l);text-align:center}
-.tl{display:flex;gap:14px}.tl div{flex:1;background:#fff;padding:20px;border-radius:14px;border-top:8px solid var(--d);font-size:26px}.tl b{display:block;font-size:30px}
-.check div{background:#fff;padding:16px 22px;margin-bottom:10px;border-left:8px solid var(--d);font-size:32px}
-.cta{margin-top:20px;background:var(--d);color:#fff;font-weight:800;padding:18px 24px;display:inline-block}
-.deco{position:absolute;z-index:0;right:80px;bottom:150px;width:280px;height:200px;display:flex;align-items:flex-end;gap:14px}
-.deco i{flex:1;background:var(--l);border:3px solid var(--d);border-radius:6px 6px 0 0}"""
-def slide(s):
-    l,d = C[s["a"]]
-    body = f'<div class="body">{s["body"]}</div>' if s["body"] else ""
-    return f'''<div class="s" id="s{s["n"]}" style="--l:{l};--d:{d}">
-<div class="top"><span>{s["label"]} • 0{s["n"]}</span><span class="logo">YOUR BRAND</span></div>
-<h1>{s["pre"]} <span class="hl">{s["hl"]}</span> {s["post"]}</h1>
-<div class="band">{s["band"]}</div><div class="line"></div>{body}
-<div class="proof">{s["proof"]}</div>
-<div class="deco"><i style="height:45%"></i><i style="height:80%"></i><i style="height:60%"></i><i style="height:100%"></i></div>
-<div class="take">{s["take"]}</div>
-<div class="foot"><span>AI agents for real estate • Practical guide</span><span class="pill">0{s["n"]}/08 {"Follow for more" if s["n"]==8 else "Swipe"} →</span></div></div>'''
-html = f'<!doctype html><html><head><meta charset="utf-8"><title>AI Agent Carousel</title><style>{CSS}</style></head><body>{"".join(map(slide,S))}</body></html>'
-(H/"carousel.html").write_text(html)
+background:#F4EBDF;background-image:linear-gradient(#e7ddcf 1px,transparent 1px),linear-gradient(90deg,#e7ddcf 1px,transparent 1px);
+background-size:45px 45px;padding:80px 90px;margin-bottom:20px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.lab{font-weight:800;letter-spacing:3px;font-size:24px}
+.logo{background:#FFE000;padding:14px 24px;font-weight:900;font-size:24px}
+h1{font-size:132px;line-height:1.02;font-weight:900;letter-spacing:-4px;margin-top:110px}
+.hl{background:var(--l);padding:0 14px;position:relative;outline:3px solid var(--d);display:inline-block;line-height:1.05}
+.hl:before,.hl:after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;background:var(--d)}
+.hl:before{left:-12px;top:-12px}.hl:after{right:-12px;bottom:-12px}
+.band{display:inline-block;background:var(--d);color:#fff;font-size:48px;font-weight:800;padding:14px 26px;margin-top:44px}
+.proof{margin-top:70px;font-size:40px;font-weight:700}
+.emoji{font-size:110px;letter-spacing:20px}
+.flow{display:flex;align-items:center;gap:22px}.flow span{background:#fff;border:3px solid var(--d);padding:22px 34px;border-radius:18px}
+.flow em{font-style:normal;color:var(--d);font-size:56px}
+.chips{display:flex;flex-wrap:wrap;gap:18px}.chips span{background:#fff;padding:20px 30px;border-radius:60px;border:3px solid var(--d)}
+.vs{display:flex;gap:24px}.vs div{background:#fff;padding:26px 40px;border-radius:18px;font-size:56px;font-weight:900}
+.vs small{display:block;font-size:24px;color:#777;font-weight:600}.vs .on{background:var(--l);outline:3px solid var(--d)}
+.dots{display:flex;align-items:center;width:640px}.dots i{width:48px;height:48px;border-radius:50%;background:var(--d)}
+.dots b{flex:1;height:6px;background:var(--d)}
+.cta{display:inline-block;background:#fff;border:4px dashed var(--d);padding:24px 36px;font-size:52px;font-weight:900}
+.take{position:absolute;left:90px;bottom:160px;background:#111;color:#fff;font-weight:900;font-size:58px;line-height:1.08;padding:34px 40px}
+.num{position:absolute;right:70px;bottom:120px;font-size:380px;font-weight:900;color:var(--l);line-height:1;letter-spacing:-12px;z-index:0}
+.take,.foot{z-index:1}
+.foot{position:absolute;left:90px;right:90px;bottom:64px;display:flex;justify-content:space-between;align-items:center;font-size:24px;font-weight:700;color:#444}
+.pill{background:#fff;border-radius:40px;padding:14px 28px;font-size:28px;font-weight:800;color:#111}"""
+
+
+def slide(i, s):
+    l, d = C[s["a"]]
+    parts = s["h"]
+    if len(parts) == 2:
+        h = f'{parts[0]}<br><span class="hl">{parts[1]}</span>'
+    else:
+        h = f'{parts[0]} <span class="hl">{parts[1]}</span><br>{parts[2]}'
+    pill = "Follow for more →" if i == 8 else "Swipe →"
+    return f'''<div class="s" id="s{i}" style="--l:{l};--d:{d}">
+<div class="top"><span class="lab">{s["label"]} • 0{i}</span><span class="logo">{BRAND}</span></div>
+<h1>{h}</h1><div class="band">{s["band"]}</div><div class="proof">{s["proof"]}</div>
+<div class="num">0{i}</div><div class="take">{s["take"]}</div>
+<div class="foot"><span>{BRAND}</span><span class="pill">0{i}/08 {pill}</span></div></div>'''
+
+
+html = ('<!doctype html><html><head><meta charset="utf-8"><title>AI Agent Carousel</title>'
+        f'<style>{CSS}</style></head><body>{"".join(slide(i + 1, s) for i, s in enumerate(S))}</body></html>')
+(H / "carousel.html").write_text(html)
