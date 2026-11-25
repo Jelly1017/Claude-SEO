@@ -28,8 +28,8 @@ h1{font-weight:900;letter-spacing:-3px;line-height:1.02}
 #q .take{margin-top:26px;font-size:40px;padding:22px 30px}#q .foot{left:80px;right:80px;bottom:52px}"""
 def card(i):
     rows = "".join(f"<div><b>0{n+1}</b><span>{a} <strong>{b}</strong></span></div>" for n, (a, b) in enumerate(ITEMS))
-    return f'''<div class="s" id="{i}"><div class="top"><span class="lab">LANDLORD TIPS</span><span class="logo">{BRAND}</span></div>
+    return f'''<div class="s" id="{i}"><div class="top"><span class="lab">LANDLORD TIPS</span></div>
 <h1>5 <span class="hl">mistakes</span><br>landlords make.</h1><div class="list">{rows}</div>
 <div class="take">PLAN BEFORE YOU<br>HAND OVER THE KEYS.</div>
 <div class="foot"><span></span><span class="pill">Save this 🔖</span></div></div>'''
-(H/"graphic.html").write_text(f'<!doctype html><html><head><meta charset="utf-8"><title>Landlord Mistakes</title><style>{CSS}</style></head><body>{card("p")}{card("q")}</body></html>')
+(H/"graphic.html").write_text(f'<!doctype html><html><head><meta charset="utf-8"><title>Landlord Mistakes</title><style>{CSS}</style></head><body>{card("p")}</body></html>')
